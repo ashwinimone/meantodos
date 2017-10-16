@@ -1,46 +1,42 @@
 var express = require('express');
-var router =  express.Router();
-
+var router = express.Router();
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://ashwini:ashwini@ds121495.mlab.com:21495/meantodos', ['todos']);
-
+var db = mongojs('mongodb://admin:admin@ds041516.mlab.com:41516/meantodos_brad_dev',['todos']);
 
 // Get Todos
 router.get('/todos', function(req, res, next){
-    //get all the todos in the database
     db.todos.find(function(err, todos){
         if(err){
-           res.send(err); // send error
+           res.send(err); 
         } else {
-           res.json(todos); // get todos in json format
+           res.json(todos);
         }
     });
 });
 
-// Get Single Todos
+// Get Single Todo
 router.get('/todo/:id', function(req, res, next){
-    //get one the todo from the database
     db.todos.findOne({
-        _id: mongojs.ObjectId(req.params.id) // attribute
-    },function(err, todo){
+        _id: mongojs.ObjectId(req.params.id)
+    }, function(err, todo){
         if(err){
-           res.send(err); // send error
+           res.send(err); 
         } else {
-           res.json(todo); // get todos in json format
+           res.json(todo);
         }
     });
 });
 
 // Save Todo
 router.post('/todo', function(req, res, next){
-    var todo = req.body; // data will come from body
+    var todo = req.body;
     if(!todo.text || !(todo.isCompleted + '')){
         res.status(400);
         res.json({
             "error": "Invalid Data"
         });
     } else {
-        db.save(todo, function(err, result){
+        db.todos.save(todo, function(err, result){
             if(err){
                 res.send(err); 
             } else {
@@ -51,8 +47,7 @@ router.post('/todo', function(req, res, next){
 });
 
 // Update Todo
-// put request coz we are updating the data, use same url as long as different type of requests
-router.put('/todo/:id', function(req, res, next){ 
+router.put('/todo/:id', function(req, res, next){
     var todo = req.body;
     var updObj = {};
     
